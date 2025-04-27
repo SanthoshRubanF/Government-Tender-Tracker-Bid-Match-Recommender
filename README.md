@@ -25,9 +25,9 @@ The **Government Tender Tracker & Bid-Match Recommender** is a web-based applica
 
 ## ⚙️ Setup Instructions
 ```bash
-# Clone the repository
+## Clone the repository
 git clone https://github.com/SanthoshRubanF/Government-Tender-Tracker-Bid-Match-Recommender.get
 cd Government-Tender-Tracker-Bid-Match-Recommender
 
-# To view in Streamlit
+## To view in Streamlit
 https://government-tender-tracker-bid-match-recommender-iofqgmdddvsea5.streamlit.app/
