@@ -5,8 +5,7 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 ![Status](https://img.shields.io/badge/Status-Active-brightgreen)
 
-Tender Tracker is a **Streamlit-based web application** that helps businesses and startups **discover government tenders** matching their services.  
-It automatically **scrapes live tenders** from government portals, **analyzes your company profile**, and **recommends the best tenders** using **AI-driven matching**.
+A Streamlit web app that scrapes government tenders from the GeM portal, matches them to a company's capability profile using machine learning (TF-IDF), and recommends high-fit tenders.
 
 > **Technologies Used:** Streamlit, Python, SQLite, BeautifulSoup, scikit-learn, TF-IDF, Cosine Similarity.
 
