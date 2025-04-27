@@ -12,6 +12,7 @@ import threading
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import hashlib
+from streamlit.runtime.scriptrunner import RerunException
 
 # --- CONFIG ---
 st.set_page_config(page_title="Tender Tracker", page_icon="📢", layout="wide")
@@ -88,10 +89,9 @@ def match_tenders(profile_text, tenders_df):
 
 # --- Auto Refresh ---
 def auto_refresh():
-    time.sleep(300)  # Sleep for 5 minutes
-    st.experimental_rerun()  # Re-run the app automatically
+    time.sleep(300)
+    raise RerunException()
 
-# Call the function to refresh
 auto_refresh()
 
 # --- Start Background Scraper ---
