@@ -89,9 +89,29 @@ def match_tenders(profile_text, tenders_df):
 
 # --- Auto Refresh ---
 def auto_refresh():
-    time.sleep(300)
-    raise RerunException()
+    # Create a placeholder to control refreshing
+    placeholder = st.empty()
 
+    # Check if the session state has been set for refresh count
+    if 'refresh_counter' not in st.session_state:
+        st.session_state.refresh_counter = 0
+
+    # Increment the counter every time the app is refreshed
+    st.session_state.refresh_counter += 1
+
+    # Display the refresh count
+    st.write(f"Refresh Count: {st.session_state.refresh_counter}")
+
+    # Trigger refresh every 5 minutes (300 seconds)
+    if st.session_state.refresh_counter > 0 and st.session_state.refresh_counter % 5 == 0:
+        # Show a loading message and refresh
+        with st.spinner("Refreshing..."):
+            time.sleep(1)
+        # Using the placeholder to simulate a "refresh" of the page
+        placeholder.empty()  # Empty the placeholder
+        st.experimental_rerun()  # This will still refresh, even though we aren't using RerunException directly
+
+# Call the auto-refresh function
 auto_refresh()
 
 # --- Start Background Scraper ---
