@@ -48,4 +48,4 @@ It automatically **scrapes live tenders** from government portals, **analyzes yo
 2. **To Run in Streamlite:**
 
       ```bash
-      https://government-tender-tracker-bid-match-recommender-iofqgmdddvsea5.streamlit.app/
+      https://government-tender-tracker-bid-match-recommender-pwqvczvzt89bcu.streamlit.app/
