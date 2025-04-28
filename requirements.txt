@@ -1,8 +1,7 @@
 streamlit
-pandas
-scikit-learn
-sqlite3
-smtplib
-email-validator
+streamlit-autorefresh
 beautifulsoup4
 requests
+pandas
+scikit-learn
+pdfplumber
