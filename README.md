@@ -14,7 +14,7 @@ It automatically **scrapes live tenders** from government portals, **analyzes yo
 
 ## ✨ Key Features
 
-- 🔒 **Secure Login System** (Username + Password authentication)
+- 🔒 **Secure Login System** (Username : admin + Password : 1234)
 - 🛠 **Live Tender Scraper** from [eTenders.gov.in](https://etenders.gov.in/eprocure/app)
 - ⏳ **Background Auto-Update** of tenders every 5 minutes
 - 🧠 **AI-Based Recommendation Engine** (TF-IDF + Cosine Similarity)
@@ -34,6 +34,19 @@ It automatically **scrapes live tenders** from government portals, **analyzes yo
 3. **The app automatically fetches tenders** from [eTenders.gov.in](https://etenders.gov.in/eprocure/app).
 4. **Matching Engine** ranks tenders based on relevance to your company's services.
 5. **Explore, search, and download** the most relevant tender opportunities!
+
+---
+
+## Python Packages
+
+   Streamlit: For the web app.
+   BeautifulSoup4: For web scraping.
+   requests: For HTTP requests.
+   pdfplumber: For extracting text from PDFs.
+   sklearn: For TF-IDF vectorization.
+   pandas: For data manipulation.
+   Twilio: For SMS notifications (optional).
+   smtplib: For email notifications (optional).
 
 ---
 
