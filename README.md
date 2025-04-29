@@ -37,7 +37,7 @@ It automatically **scrapes live tenders** from government portals, **analyzes yo
 
 ---
 
-## Python Packages
+## 📂 Python Packages
 
 1. **Streamlit:** For the web app.
 2. **BeautifulSoup4:** For web scraping.
