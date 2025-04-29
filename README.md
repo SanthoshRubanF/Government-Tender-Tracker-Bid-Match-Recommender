@@ -39,14 +39,14 @@ It automatically **scrapes live tenders** from government portals, **analyzes yo
 
 ## Python Packages
 
-   Streamlit: For the web app.
-   BeautifulSoup4: For web scraping.
-   requests: For HTTP requests.
-   pdfplumber: For extracting text from PDFs.
-   sklearn: For TF-IDF vectorization.
-   pandas: For data manipulation.
-   Twilio: For SMS notifications (optional).
-   smtplib: For email notifications (optional).
+1. **Streamlit:** For the web app.
+2. **BeautifulSoup4:** For web scraping.
+3. **requests:** For HTTP requests.
+3. **pdfplumber:** For extracting text from PDFs.
+4. **sklearn:** For TF-IDF vectorization.
+5. **pandas:** For data manipulation.
+6. **Twilio:** For SMS notifications (optional).
+7. **smtplib:** For email notifications (optional).
 
 ---
 
