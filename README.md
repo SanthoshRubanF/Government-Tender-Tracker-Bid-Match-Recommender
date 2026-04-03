@@ -102,6 +102,7 @@ Application settings:
 - `TENDER_TRACKER_DB_PATH`
 - `TENDER_TRACKER_SOURCE_URL`
 - `TENDER_TRACKER_SOURCE_NAME`
+- `TENDER_TRACKER_DISPLAY_TIMEZONE`
 - `TENDER_TRACKER_REQUEST_TIMEOUT`
 - `TENDER_TRACKER_SYNC_INTERVAL_MINUTES`
 - `TENDER_TRACKER_AUTO_REFRESH_SECONDS`
@@ -111,6 +112,7 @@ Default behavior:
 
 - Database file: `tenders.db`
 - Source name: `CPPP`
+- Display timezone: `Asia/Kolkata`
 - Request timeout: `20` seconds
 - Sync interval: `30` minutes
 - Auto-refresh interval: `300` seconds

@@ -1,13 +1,18 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pandas as pd
 import streamlit as st
 
 from tender_tracker.auth import is_auth_configured, verify_password
-from tender_tracker.config import AppConfig, load_config
-from tender_tracker.db import ensure_database_ready, fetch_tenders_dataframe, get_sync_snapshot
+from tender_tracker.config import AppConfig, load_config, resolve_display_timezone
+from tender_tracker.db import (
+    SyncSnapshot,
+    ensure_database_ready,
+    fetch_tenders_dataframe,
+    get_sync_snapshot,
+)
 from tender_tracker.matcher import rank_tenders
 from tender_tracker.profile_parser import ProfileValidationError, load_profile_text
 from tender_tracker.services import SyncResult, is_sync_due, sync_tenders
@@ -28,7 +33,7 @@ def _safe_autorefresh(interval_seconds: int) -> None:
         return
 
 
-def _format_timestamp(value: str | None) -> str:
+def _format_timestamp(value: str | None, timezone_name: str) -> str:
     if not value:
         return "Never"
 
@@ -36,7 +41,20 @@ def _format_timestamp(value: str | None) -> str:
         parsed = datetime.fromisoformat(value)
     except ValueError:
         return value
-    return parsed.astimezone().strftime("%d %b %Y %I:%M %p")
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    display_timezone = resolve_display_timezone(timezone_name)
+    return parsed.astimezone(display_timezone).strftime("%d %b %Y %I:%M %p %Z")
+
+
+def _refresh_snapshot_after_sync(
+    config: AppConfig,
+    snapshot: SyncSnapshot,
+    result: SyncResult | None,
+) -> SyncSnapshot:
+    if result and result.performed:
+        return get_sync_snapshot(config.database_path)
+    return snapshot
 
 
 def _filter_tenders(dataframe: pd.DataFrame, query: str) -> pd.DataFrame:
@@ -167,7 +185,7 @@ def _render_tender_table(dataframe: pd.DataFrame) -> None:
     )
 
 
-def _render_sidebar(config: AppConfig, snapshot) -> SyncResult | None:
+def _render_sidebar(config: AppConfig, snapshot: SyncSnapshot) -> SyncResult | None:
     with st.sidebar:
         st.subheader("Session")
         st.write(f"Source: `{config.source_name}`")
@@ -179,7 +197,10 @@ def _render_sidebar(config: AppConfig, snapshot) -> SyncResult | None:
         st.divider()
         st.subheader("Data Sync")
         st.write(f"Stored tenders: {snapshot.total_tenders}")
-        st.write(f"Last successful sync: {_format_timestamp(snapshot.last_successful_sync_at)}")
+        st.write(
+            "Last successful sync: "
+            f"{_format_timestamp(snapshot.last_successful_sync_at, config.display_timezone)}"
+        )
         if snapshot.latest_sync_status == "error" and snapshot.latest_sync_message:
             st.warning(snapshot.latest_sync_message)
 
@@ -202,6 +223,7 @@ def _render_dashboard(config: AppConfig) -> None:
     auto_result = _automatic_sync_if_due(config)
     snapshot = get_sync_snapshot(config.database_path)
     manual_result = _render_sidebar(config, snapshot)
+    snapshot = _refresh_snapshot_after_sync(config, snapshot, manual_result)
     result_to_show = manual_result or auto_result
     _display_sync_feedback(result_to_show)
 
@@ -253,7 +275,10 @@ def _render_dashboard(config: AppConfig) -> None:
     metric_columns[0].metric("Stored tenders", snapshot.total_tenders)
     metric_columns[1].metric("Visible tenders", len(filtered_dataframe))
     metric_columns[2].metric("New in latest sync", snapshot.latest_sync_new_count)
-    metric_columns[3].metric("Last sync", _format_timestamp(snapshot.last_successful_sync_at))
+    metric_columns[3].metric(
+        "Last sync",
+        _format_timestamp(snapshot.last_successful_sync_at, config.display_timezone),
+    )
 
     if profile_details:
         st.caption(

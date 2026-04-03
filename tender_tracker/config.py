@@ -2,14 +2,18 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
+from datetime import timedelta, timezone, tzinfo
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 
 DEFAULT_SOURCE_URL = (
     "https://www.etenders.gov.in/eprocure/app"
     "?component=%24DirectLink&page=P"
 )
+DEFAULT_DISPLAY_TIMEZONE = "Asia/Kolkata"
+FALLBACK_IST = timezone(timedelta(hours=5, minutes=30), name="IST")
 
 
 def _read_secret(name: str, default: Any = None) -> Any:
@@ -39,6 +43,7 @@ class AppConfig:
     database_path: Path
     source_url: str
     source_name: str
+    display_timezone: str
     request_timeout_seconds: int
     sync_interval_minutes: int
     auto_refresh_seconds: int
@@ -47,6 +52,16 @@ class AppConfig:
     auth_password_hash: str
     auth_password_salt: str
     auth_iterations: int
+
+
+def resolve_display_timezone(name: str) -> tzinfo:
+    cleaned_name = str(name or "").strip() or DEFAULT_DISPLAY_TIMEZONE
+    try:
+        return ZoneInfo(cleaned_name)
+    except ZoneInfoNotFoundError:
+        if cleaned_name.lower() in {"asia/kolkata", "asia/calcutta", "ist"}:
+            return FALLBACK_IST
+        return timezone.utc
 
 
 def load_config(project_root: Path | None = None) -> AppConfig:
@@ -59,6 +74,9 @@ def load_config(project_root: Path | None = None) -> AppConfig:
         database_path=database_path,
         source_url=_read_setting("TENDER_TRACKER_SOURCE_URL", DEFAULT_SOURCE_URL),
         source_name=_read_setting("TENDER_TRACKER_SOURCE_NAME", "CPPP"),
+        display_timezone=str(
+            _read_setting("TENDER_TRACKER_DISPLAY_TIMEZONE", DEFAULT_DISPLAY_TIMEZONE)
+        ),
         request_timeout_seconds=_read_int("TENDER_TRACKER_REQUEST_TIMEOUT", 20),
         sync_interval_minutes=_read_int("TENDER_TRACKER_SYNC_INTERVAL_MINUTES", 30),
         auto_refresh_seconds=_read_int("TENDER_TRACKER_AUTO_REFRESH_SECONDS", 300),
